@@ -5,6 +5,7 @@ use App\Http\Controllers\UserController;
 use App\Http\Controllers\FormController;
 use App\Http\Controllers\CalculateController;
 use App\Http\Controllers\AboutController;
+use App\Http\Controllers\PostController;
 
 Route::get('/', function () {
     return view('welcome');
@@ -27,7 +28,12 @@ Route::group(['prefix' => 'user'], function () {
     Route::post('add',[UserController::class, 'addUser'])
     ->name('addUser');});
 
+
+Route::get('/posts', [PostController::class, 'index'])->name('posts.index');
+Route::post('/posts', [PostController::class, 'store'])->name('posts.store');
+
 Route::fallback(function () {
     return response()->view('fallback', [], 404);
 });
+
 
