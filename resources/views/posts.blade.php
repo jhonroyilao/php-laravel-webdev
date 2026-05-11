@@ -18,7 +18,8 @@
     border-bottom: 1px solid #000;
   }
 
-  table th, table td {
+  table th,
+  table td {
     vertical-align: middle;
   }
 </style>
@@ -36,23 +37,44 @@
 
         <div class="p-3">
 
+          {{-- Show validation errors --}}
+          @if ($errors->any())
+            <div class="alert alert-danger">
+              <ul class="mb-0">
+                @foreach ($errors->all() as $error)
+                  <li>{{ $error }}</li>
+                @endforeach
+              </ul>
+            </div>
+          @endif
+
           <form action="{{ route('posts.store') }}" method="POST">
             @csrf
 
             <div class="form-group mb-3">
               <label>Title</label>
-              <input type="text" name="title" class="form-control" required>
+              <input
+                type="text"
+                name="title"
+                class="form-control"
+                value="{{ old('title') }}"
+                required
+              >
             </div>
 
             <div class="form-group mb-3">
               <label>Description</label>
-              <textarea name="description" class="form-control" rows="4" required></textarea>
+              <textarea
+                name="description"
+                class="form-control"
+                rows="4"
+                required
+              >{{ old('description') }}</textarea>
             </div>
 
             <button type="submit" class="btn btn-primary w-100">
               Submit Post
             </button>
-
           </form>
 
         </div>
@@ -62,7 +84,6 @@
 
     <!-- RIGHT: POSTS TABLE -->
     <div class="col-lg-8 col-12">
-
       <div class="fixed-box">
 
         <div class="section-header">
@@ -82,18 +103,20 @@
             </thead>
 
             <tbody>
-              @forelse($post as $p)
-                <tr>
-                  <td>{{ $p->title }}</td>
-                  <td>{{ $p->description }}</td>
-                  <td>{{ $p->created_by }}</td>
-                  <td>{{ optional($p->statusInfo)->display_name ?? 'N/A' }}</td>
-                </tr>
-              @empty
+              @if(isset($post) && count($post) > 0)
+                @foreach($post as $p)
+                  <tr>
+                    <td>{{ $p->title }}</td>
+                    <td>{{ $p->description }}</td>
+                    <td>{{ $p->created_by }}</td>
+                    <td>{{ optional($p->statusInfo)->display_name ?? 'N/A' }}</td>
+                  </tr>
+                @endforeach
+              @else
                 <tr>
                   <td colspan="4">No posts yet</td>
                 </tr>
-              @endforelse
+              @endif
             </tbody>
 
           </table>
@@ -101,7 +124,6 @@
         </div>
 
       </div>
-
     </div>
 
   </div>
