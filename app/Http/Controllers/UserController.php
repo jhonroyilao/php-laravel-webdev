@@ -1,40 +1,55 @@
 <?php
 
 namespace App\Http\Controllers;
-
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\DB;
 
-class PostController extends Controller
+class UserController extends Controller
 {
-    public function index()
-    {
-        return view('posts');
+    //
+    public function index(){
+        return "REMOVE USER";
     }
 
-    public function store(Request $request)
-{
-    $request->validate(
-        [
-            'title' => ['required', 'min:3'],
-            'description' => ['required', 'min:5'],
-        ],
-        [
-            'title.required' => 'Please enter a title.',
-            'description.required' => 'Please enter a description.',
-        ]
-    );
+    public function userInputParam($id, $name){
+        $inputParamenter = $id;
+        return $name ." Input Parameter is " . $inputParamenter;
 
-    Log::info('====== NEW POST ======');
-    Log::info('Title: ' . $request->title);
-    Log::info('Description: ' . $request->description);
+    }
 
-    return response()->json([
-        'message' => 'Post submitted successfully.',
-        'data' => [
-            'title' => $request->title,
-            'description' => $request->description,
-        ]
-    ]);
+    public function userEdit($id, $name){
+        return "<a href = '".route('userDisplay', [$id, $name])."' > Edit User </a> =";
     }
+
+    public function userInfo($id){
+        return "Your user id is " . $id;
     }
+
+    public function addUser(Request $request){
+
+        $request ->validate ([
+            'first_name' =>['required','min:4'],
+            'last_name' =>['required'],
+            'email' =>['required', 'ends_with:@iskolarngbayan.pup.edu.ph'],
+            'password' =>['required','min:5']
+        ],[
+            'first_name.required' => 'Wala ka bang pangalan? Leche maglagay ka muna ng pangalan!',
+            'last_name.required' => 'Di mo ba mahal pamilya mo? Maglagay ka ng last name!',
+            'email.required' => 'Lagay ka ng email uwu',
+            'password.required' => 'Lagay ka ng password uwu',
+        ]);
+
+
+        Log::info ("======NEW USER=====");
+        Log::info ($request->first_name);
+        Log::info ($request->middle_name);
+        Log::info ($request->last_name);
+        Log::info ($request->email);
+        Log::info ($request->password);
+
+        $result=DB::table('users')->get();
+        
+        return $result;
+    }
+}

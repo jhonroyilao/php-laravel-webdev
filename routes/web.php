@@ -29,8 +29,8 @@ Route::group(['prefix' => 'user'], function () {
     ->name('addUser');});
 
 
-Route::get('/posts', [PostController::class, 'index'])->name('posts.index');
-Route::post('/posts', [PostController::class, 'store'])->name('posts.store');
+Route::get('/posts', [PostController::class, 'postPage']);
+Route::post('/add-post', [PostController::class, 'addPost']);
 
 Route::fallback(function () {
     return response()->view('fallback', [], 404);

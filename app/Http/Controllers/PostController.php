@@ -2,53 +2,52 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Post;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 
 class PostController extends Controller
 {
-    public function index()
+    // display post page
+    public function postPage()
     {
-        // fetch records sa db
-        $post = Post::with('statusInfo')->get();
+        $allPosts = DB::table('post')
+        ->join('statuses', 'post.status', '=', 'statuses.id')
+        ->select(
+            'post.*',
+            'statuses.display_name as status_name'
+        )
+        ->get();
 
-        // send to blade
-        return view('posts', compact('post'));
+        return view('posts', ['posts' => $allPosts]);
     }
 
-    public function store(Request $request)
+    // handle form
+    public function addPost(Request $request)
     {
-        // validation ng form inputs
-        $request->validate(
-            [
-                'title' => ['required', 'min:3'],
-                'description' => ['required', 'min:5'],
-            ],
-            [
-                'title.required' => 'please enter a title.',
-                'description.required' => 'please enter a description.',
-            ]
-        );
+        $request->validate([
+            'title' => ['required', 'min:2'],
+            'description' => ['required', 'min:5'],
+        ],
+        [
+            'title.required' => 'You need to add a title',
+            'title.min' => 'Title must be at least 2 characters long',
 
-        Log::info('====== new post ======');
-        Log::info($request->all());
-
-        // kuha updated data sa database
-        $post = Post::all();
-
-        /* save to database
-        Post::create([
-            'title' => $request->title,
-            'description' => $request->description,
-            'created_by' => 'n/a',
-            'status' => 1,
+            'description.required' => 'You need to add a description',
+            'description.min' => 'Description must be at least 5 characters long',
         ]);
-        */
-        
-        // return json ng database content
+
+        // log only
+        Log::info('==== NEW POST====');
+        Log::info('Title: ' . $request->title);
+        Log::info('Description: ' . $request->description);
+
+        // fetch db record
+        $allPosts = DB::table('post')->get();
+
+        // return json
         return response()->json([
-            'data' => $post
+            'data' => $allPosts
         ]);
     }
 }
