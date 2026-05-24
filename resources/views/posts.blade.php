@@ -1,8 +1,9 @@
 @extends('common.main')
+
 @section('title', 'Posts Page')
 
-
 @section('content')
+
 <style>
     .fixed-box {
         border: 1px solid #000;
@@ -38,22 +39,22 @@
 
                 <div class="p-3">
 
-                    {{-- VALIDATION ERRORS --}}
                     @if ($errors->any())
                         <div class="alert alert-danger">
-                          <ul class="mb-0">
+                            <ul class="mb-0">
                                 @foreach ($errors->all() as $error)
                                     <li>{{ $error }}</li>
                                 @endforeach
                             </ul>
                         </div>
-
                     @endif
-                    <form method="POST" action="/add-post">
+
+                    <form method="POST" action="{{ route('posts.store') }}">
                         @csrf
-                        <!-- TITLE -->
+
                         <div class="form-group mb-3">
                             <label>Title</label>
+
                             <input
                                 type="text"
                                 name="title"
@@ -62,9 +63,9 @@
                             >
                         </div>
 
-                        <!-- DESCRIPTION -->
                         <div class="form-group mb-3">
                             <label>Description</label>
+
                             <textarea
                                 name="description"
                                 class="form-control"
@@ -72,51 +73,82 @@
                             >{{ old('description') }}</textarea>
                         </div>
 
-                        <!-- buttom -->
+                        <div class="mb-3">
+
+                            <label class="form-label">
+                                Status
+                            </label>
+
+                            <select class="form-select" name="status">
+
+                                <option value=""></option>
+
+                                @foreach($statuses as $status)
+
+                                    <option value="{{ $status->id }}">
+                                        {{ $status->display_name }}
+                                    </option>
+
+                                @endforeach
+
+                            </select>
+                        </div>
+
                         <button
                             type="submit"
-                            class="btn btn-primary w-100">
+                            class="btn btn-primary w-100"
+                        >
                             Submit Post
                         </button>
 
                     </form>
-                </div></div>
+                </div>
+            </div>
         </div>
 
         <!-- RIGHT SIDE -->
         <div class="col-lg-8 col-12">
+
             <div class="fixed-box">
+
                 <div class="section-header">
                     POSTS LIST
                 </div>
+
                 <div class="p-3">
+
                     <table class="table table-bordered text-center">
+
                         <thead class="table-dark">
                             <tr>
                                 <th>Title</th>
                                 <th>Description</th>
                                 <th>Created By</th>
                                 <th>Status</th>
+                                <th>Created At</th>
+                                <th>Edit</th>
                             </tr>
                         </thead>
+
                         <tbody>
-                            @if(count($posts) > 0)
-                            @foreach($posts as $p)
-                                    <tr>
-                                        <td>{{ $p->title }}</td>
-                                        <td>{{ $p->description }}</td>
-                                        <td>{{ $p->created_by }}</td>
-                                        <td>{{ $p->status_name }}</td>
-                                    </tr>
-                                @endforeach
-                            @else
+
+                            @foreach($posts as $post)
                                 <tr>
-                                    <td colspan="4">
-                                        No posts yet
+                                    <td>{{ $post->title }}</td>
+                                    <td>{{ $post->description }}</td>
+                                    <td>{{ $post->created_by }}</td>
+                                    <td>{{ $post->status_display_name }}</td>
+                                    <td>{{ $post->created_at }}</td>
+                                    <td>
+                                        @if($post->status_display_name != 'Published')
+                                            <a
+                                                href="{{ route('posts.edit', $post->id) }}"
+                                                class="bi bi-pencil-square"
+                                            ></a>
+                                        @endif
                                     </td>
                                 </tr>
-
-                            @endif
+                            @endforeach
                         </tbody>
                     </table>
                 </div>
