@@ -77,8 +77,7 @@ class PostController extends Controller
         );
 
         DB::table('post')
-            ->where('id', $id)
-            ->update([
+            ->where('id', $id)->update([
                 'title' => $request->title,
                 'description' => $request->description,
                 'status' => $request->status,
@@ -86,4 +85,30 @@ class PostController extends Controller
 
         return redirect('posts');
     }
+
+    // DELTE POST
+    public function deletePost($id){
+        DB:: table('post')
+        -> where('id', $id)
+        /*-> where('id', '=', $id)*/
+        -> delete ();
+    
+    return redirect()->route('posts.index');
+    }
+
+
+  public function searchPost(Request $request)
+{
+    $search = $request->search;
+
+    $posts = DB::table('post')
+        ->where('title', 'like', "%{$search}%")
+        ->orWhere('description', 'like', "%{$search}%")
+        ->get();
+
+    $statuses = DB::table('statuses')->get();
+
+    return view('posts', compact('posts', 'statuses'));
+}
+
 }
