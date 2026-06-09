@@ -47,7 +47,9 @@ class UserController extends Controller
         Log::info ($request->last_name);
         Log::info ($request->email);
         Log::info ($request->password);
+
         $result=DB::table('users')->get();
+        
         return $result;
     }
 }
