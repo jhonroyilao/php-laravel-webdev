@@ -25,12 +25,40 @@
 </style>
 
 <div class="container py-5">
+   <!-- SEARCH 
+        
+        <div class="container mb-4" >
+            <div class="row justify-content-center">
+                <div class="col-md-6">
+                    <form class="d-flex">
+                        <div class="input-group">
+                            <input class="form-control form-control-lg" type="search" placeholder="Search" aria-label="Search">
+                            <button class="btn btn-primary px-4" type="submit">
+                                    <i class="bi bi-search"></i>
+                                </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+-->
+    <div class="mb-5">
+    <form method="GET" action="{{ route('posts.search') }}" class="d-flex" role="search">
+    <input
+        class="form-control me-2"
+        type="search"
+        name="param"
+        placeholder="Search"
+        value="{{ request('param') }}"
+    />
+    <button class="btn btn-primary" type="submit">Search</button>
+</form>
+  </div>
+
 
     <div class="row">
-
         <!-- LEFT SIDE -->
         <div class="col-lg-4 col-12 mb-3">
-
             <div class="fixed-box">
 
                 <div class="section-header">
@@ -119,7 +147,7 @@
 
                     <table class="table table-bordered text-center">
 
-                        <thead class="table-dark">
+                        <thead class="table-dark text-centered">
                             <tr>
                                 <th>Title</th>
                                 <th>Description</th>
@@ -140,13 +168,22 @@
                                     <td>{{ $post->status_display_name }}</td>
                                     <td>{{ $post->created_at }}</td>
                                     <td>
-                                        @if($post->status_display_name != 'Published')
                                             <a
                                                 href="{{ route('posts.edit', $post->id) }}"
                                                 class="bi bi-pencil-square"
                                             ></a>
-                                        @endif
-                                    </td>
+                                            
+                                            <form action= "{{ route('posts.delete', $post->id)}}" method='POST'>
+                                            @csrf
+                                            @method('delete')
+                                            
+    
+                                            <button type="submit" class="btn btn-link p-0">
+                                                <i class="bi bi-trash"></i>
+                                            </button>
+                                            </form>
+                                     </td>
+                                 
                                 </tr>
                             @endforeach
                         </tbody>
@@ -154,6 +191,10 @@
                 </div>
             </div>
         </div>
+
+     
+
+        
     </div>
 </div>
 

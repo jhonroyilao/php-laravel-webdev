@@ -1,7 +1,6 @@
 @extends('common.main')
 
 @section('title', 'Edit Post')
-
 @section('content')
 
 <style>

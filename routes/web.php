@@ -55,7 +55,12 @@ Route::prefix('posts')
 
         // UPDATE POST
         Route::post('/edit/{id}', 'updatePost')->name('posts.update');
-    });
+
+        // DELETE POST
+        Route::delete('delete/{id}', 'deletePost')->name('posts.delete');
+
+        // SEARCH POST
+        Route::get('search', 'searchPost')->name('posts.search');});
 
 Route::fallback(function () {
     return response()->view('fallback', [], 404);
