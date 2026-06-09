@@ -47,11 +47,11 @@
     <input
         class="form-control me-2"
         type="search"
-        name="search"
+        name="param"
         placeholder="Search"
-        value="{{ request('search') }}"
+        value="{{ request('param') }}"
     />
-    <button class="btn btn-success" type="submit">Search</button>
+    <button class="btn btn-primary" type="submit">Search</button>
 </form>
   </div>
 
