@@ -66,7 +66,7 @@ class PostController extends Controller
         return redirect('posts');
     }
 
-    // UPDATE POST
+    // EDIT POST
     public function updatePost(Request $request, $id)
     {
         $request->validate(
@@ -86,24 +86,34 @@ class PostController extends Controller
         return redirect('posts');
     }
 
-    // DELTE POST
-    public function deletePost($id){
-        DB:: table('post')
-        -> where('id', $id)
-        /*-> where('id', '=', $id)*/
-        -> delete ();
-    
-    return redirect()->route('posts.index');
+    // DELETE POST
+    public function deletePost($id)
+    {
+        Log::info('Deleting post ID: ' . $id);
+
+        DB::table('post')
+            ->where('id', $id)
+            ->delete();
+        
+        Log::info('Post deleted.');
+
+        return redirect()->route('posts.index');
     }
 
 
+    // SEARCH POST
   public function searchPost(Request $request)
 {
-    $search = $request->search;
+    $param = $request->param;
 
     $posts = DB::table('post')
-        ->where('title', 'like', "%{$search}%")
-        ->orWhere('description', 'like', "%{$search}%")
+        ->leftJoin('statuses', 'post.status', '=', 'statuses.id')
+        ->select(
+            'post.*',
+            'statuses.display_name as status_display_name'
+        )
+        ->where('title', 'like', "%{$param}%")
+        ->orWhere('description', 'like', "%{$param}%")
         ->get();
 
     $statuses = DB::table('statuses')->get();
